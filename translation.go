@@ -43,8 +43,8 @@ func initializeLanguage() {
 	langList := []Language{}
 	if Count(&langList, "") != 0 {
 		// Setup Active languages
-		activeLangs = []Language{}
-		Filter(&activeLangs, "`active` = ?", true)
+		ActiveLangs = []Language{}
+		Filter(&ActiveLangs, "`active` = ?", true)
 
 		// Setup default language
 		Get(&DefaultLang, "`default` = ?", true)
@@ -238,7 +238,7 @@ func initializeLanguage() {
 		{"Zhuang, Chuang", "Saɯ cueŋƅ, Saw cuengh", "za"},
 		{"Zulu", "isiZulu", "zu"},
 	}
-	activeLangs = []Language{}
+	ActiveLangs = []Language{}
 	tx := db.Begin()
 	for i, lang := range langs {
 		l := Language{
@@ -255,7 +255,7 @@ func initializeLanguage() {
 		tx.Create(&l)
 
 		if l.Active {
-			activeLangs = append(activeLangs, l)
+			ActiveLangs = append(ActiveLangs, l)
 		}
 		if l.Default {
 			DefaultLang = l
@@ -459,7 +459,7 @@ func getLanguage(r *http.Request) Language {
 		return DefaultLang
 	}
 
-	for _, l := range activeLangs {
+	for _, l := range ActiveLangs {
 		if l.Code == langCookie.Value {
 			return l
 		}
