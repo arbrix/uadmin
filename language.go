@@ -24,7 +24,7 @@ func (l Language) String() string {
 func (l *Language) Save() {
 	if l.Default {
 		Update([]Language{}, "default", false, "`default` = ?", true)
-		defaultLang = *l
+		DefaultLang = *l
 	}
 	Save(l)
 	tempActiveLangs := []Language{}
@@ -52,7 +52,7 @@ func (l *Language) Save() {
 
 // GetDefaultLanguage returns the default language
 func GetDefaultLanguage() Language {
-	return defaultLang
+	return DefaultLang
 }
 
 // GetActiveLanguages returns a list of active langages

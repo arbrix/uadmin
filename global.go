@@ -99,7 +99,7 @@ const VersionCodeName = "Housefly"
 // Public Global Variables
 
 // DefaultLang is the default language of the system.
-var defaultLang Language
+var DefaultLang Language
 
 // Theme is the name of the theme used in uAdmin.
 var Theme = "default"

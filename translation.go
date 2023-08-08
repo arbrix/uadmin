@@ -47,7 +47,7 @@ func initializeLanguage() {
 		Filter(&activeLangs, "`active` = ?", true)
 
 		// Setup default language
-		Get(&defaultLang, "`default` = ?", true)
+		Get(&DefaultLang, "`default` = ?", true)
 		return
 	}
 
@@ -258,7 +258,7 @@ func initializeLanguage() {
 			activeLangs = append(activeLangs, l)
 		}
 		if l.Default {
-			defaultLang = l
+			DefaultLang = l
 		}
 		Trail(WORKING, "Initializing Languages: [%s%d/%d%s]", colors.FGGreenB, i+1, len(langs), colors.FGNormal)
 	}
@@ -282,8 +282,8 @@ func Translate(raw string, lang string, args ...bool) string {
 		return ""
 	}
 
-	Get(&defaultLang, "`default` = ?", true)
-	transtedStr = string(langParser[defaultLang.Code])
+	Get(&DefaultLang, "`default` = ?", true)
+	transtedStr = string(langParser[DefaultLang.Code])
 
 	if len(transtedStr) > 2 {
 		return transtedStr[1 : len(transtedStr)-1]
@@ -305,7 +305,7 @@ func Tf(path string, lang string, term string, args ...interface{}) string {
 	var err error
 	var buf []byte
 	if lang == "" {
-		lang = defaultLang.Code
+		lang = DefaultLang.Code
 	}
 
 	// Check if the path if for an existing model schema
@@ -456,7 +456,7 @@ func getLanguage(r *http.Request) Language {
 	langCookie, err := r.Cookie("language")
 
 	if err != nil || langCookie == nil {
-		return defaultLang
+		return DefaultLang
 	}
 
 	for _, l := range activeLangs {
@@ -464,5 +464,5 @@ func getLanguage(r *http.Request) Language {
 			return l
 		}
 	}
-	return defaultLang
+	return DefaultLang
 }
