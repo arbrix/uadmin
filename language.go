@@ -27,17 +27,17 @@ func (l *Language) Save() {
 		DefaultLang = *l
 	}
 	Save(l)
-	tempActiveLangs := []Language{}
-	Filter(&tempActiveLangs, "`active` = ?", true)
-	ActiveLangs = tempActiveLangs
+	tempactiveLangs := []Language{}
+	Filter(&tempactiveLangs, "`active` = ?", true)
+	activeLangs = tempactiveLangs
 
 	tanslationList := []translation{}
-	for i := range ActiveLangs {
+	for i := range activeLangs {
 		tanslationList = append(tanslationList, translation{
-			Active:  ActiveLangs[i].Active,
-			Default: ActiveLangs[i].Default,
-			Code:    ActiveLangs[i].Code,
-			Name:    fmt.Sprintf("%s (%s)", ActiveLangs[i].Name, ActiveLangs[i].EnglishName),
+			Active:  activeLangs[i].Active,
+			Default: activeLangs[i].Default,
+			Code:    activeLangs[i].Code,
+			Name:    fmt.Sprintf("%s (%s)", activeLangs[i].Name, activeLangs[i].EnglishName),
 		})
 	}
 
@@ -57,5 +57,5 @@ func GetDefaultLanguage() Language {
 
 // GetActiveLanguages returns a list of active langages
 func GetActiveLanguages() []Language {
-	return ActiveLangs
+	return activeLangs
 }

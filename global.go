@@ -496,7 +496,7 @@ var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
 var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 
 // Global active languages
-var ActiveLangs []Language
+var activeLangs []Language
 
 // langMapCache is a computer memory used for storage of frequently or recently used translations.
 var langMapCache = map[string][]byte{}

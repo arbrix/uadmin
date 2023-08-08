@@ -138,7 +138,7 @@ func processForm(modelName string, w http.ResponseWriter, r *http.Request, sessi
 			val := ""
 			if f.Type == cMULTILINGUAL || f.Type == cHTML_MULTILINGUAL {
 				tVal := map[string]string{}
-				for _, lang := range ActiveLangs {
+				for _, lang := range activeLangs {
 					tVal[lang.Code] = fmt.Sprint(r.FormValue(lang.Code + "-" + t.Field(index).Name))
 				}
 				buffer := &bytes.Buffer{}
@@ -173,7 +173,7 @@ func processForm(modelName string, w http.ResponseWriter, r *http.Request, sessi
 					newVal := ""
 					appVal := ""
 					changed := false
-					for _, lang := range ActiveLangs {
+					for _, lang := range activeLangs {
 						oldVal = Translate(m.Elem().FieldByName(t.Field(index).Name).String(), lang.Code, false)
 						newVal = Translate(val, lang.Code, false)
 						appVal = Translate(newApproval.NewValue, lang.Code, false)

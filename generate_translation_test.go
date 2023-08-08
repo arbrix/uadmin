@@ -9,8 +9,8 @@ func (t *UAdminTests) TestSyncCustomTranslation() {
 	ar.Save()
 
 	results := syncCustomTranslation("uadmin/system")
-	if len(results) != len(ActiveLangs) {
-		t.Errorf("syncCustomTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(ActiveLangs))
+	if len(results) != len(activeLangs) {
+		t.Errorf("syncCustomTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(activeLangs))
 	}
 
 	results = syncCustomTranslation("uadmin/system/tags")
@@ -24,8 +24,8 @@ func (t *UAdminTests) TestSyncCustomTranslation() {
 	zh.Save()
 
 	results = syncCustomTranslation("uadmin/system")
-	if len(results) != len(ActiveLangs) {
-		t.Errorf("syncCustomTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(ActiveLangs))
+	if len(results) != len(activeLangs) {
+		t.Errorf("syncCustomTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(activeLangs))
 	}
 
 	// Clean up
@@ -44,8 +44,8 @@ func (t *UAdminTests) TestSyncModelTranslation() {
 	ar.Save()
 
 	results := syncModelTranslation(Schema["testmodelb"])
-	if len(results) != len(ActiveLangs) {
-		t.Errorf("syncModelTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(ActiveLangs))
+	if len(results) != len(activeLangs) {
+		t.Errorf("syncModelTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(activeLangs))
 	}
 
 	zh := Language{}
@@ -54,8 +54,8 @@ func (t *UAdminTests) TestSyncModelTranslation() {
 	zh.Save()
 
 	results = syncModelTranslation(Schema["testmodelb"])
-	if len(results) != len(ActiveLangs) {
-		t.Errorf("syncCustomTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(ActiveLangs))
+	if len(results) != len(activeLangs) {
+		t.Errorf("syncCustomTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(activeLangs))
 	}
 
 	s := Schema["testmodelb"]
@@ -69,8 +69,8 @@ func (t *UAdminTests) TestSyncModelTranslation() {
 	})
 	Schema["testmodelb"] = s
 	results = syncModelTranslation(Schema["testmodelb"])
-	if len(results) != len(ActiveLangs) {
-		t.Errorf("syncCustomTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(ActiveLangs))
+	if len(results) != len(activeLangs) {
+		t.Errorf("syncCustomTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(activeLangs))
 	}
 
 	s.FieldByName("TestField").DisplayName = "`Updated Test Field"
@@ -78,8 +78,8 @@ func (t *UAdminTests) TestSyncModelTranslation() {
 	s.FieldByName("TestField").PatternMsg = "Updated test message"
 	Schema["testmodelb"] = s
 	results = syncModelTranslation(Schema["testmodelb"])
-	if len(results) != len(ActiveLangs) {
-		t.Errorf("syncCustomTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(ActiveLangs))
+	if len(results) != len(activeLangs) {
+		t.Errorf("syncCustomTranslation didn't return status for all active languages. Got %d, expected %d", len(results), len(activeLangs))
 	}
 
 	// Clean up

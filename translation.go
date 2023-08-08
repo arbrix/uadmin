@@ -43,8 +43,8 @@ func initializeLanguage() {
 	langList := []Language{}
 	if Count(&langList, "") != 0 {
 		// Setup Active languages
-		ActiveLangs = []Language{}
-		Filter(&ActiveLangs, "`active` = ?", true)
+		activeLangs = []Language{}
+		Filter(&activeLangs, "`active` = ?", true)
 
 		// Setup default language
 		Get(&DefaultLang, "`default` = ?", true)
@@ -238,7 +238,7 @@ func initializeLanguage() {
 		{"Zhuang, Chuang", "Saɯ cueŋƅ, Saw cuengh", "za"},
 		{"Zulu", "isiZulu", "zu"},
 	}
-	ActiveLangs = []Language{}
+	activeLangs = []Language{}
 	tx := db.Begin()
 	for i, lang := range langs {
 		l := Language{
@@ -253,9 +253,14 @@ func initializeLanguage() {
 			l.Default = true
 		}
 		tx.Create(&l)
+		// add ukrainian as second active language
+		if l.Code == "uk" {
+			l.AvailableInGui = true
+			l.Active = true
+		}
 
 		if l.Active {
-			ActiveLangs = append(ActiveLangs, l)
+			activeLangs = append(activeLangs, l)
 		}
 		if l.Default {
 			DefaultLang = l
@@ -459,7 +464,7 @@ func getLanguage(r *http.Request) Language {
 		return DefaultLang
 	}
 
-	for _, l := range ActiveLangs {
+	for _, l := range activeLangs {
 		if l.Code == langCookie.Value {
 			return l
 		}

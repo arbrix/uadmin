@@ -242,13 +242,13 @@ func getFormData(a interface{}, r *http.Request, session *Session, s *ModelSchem
 			}
 		} else if f.Type == cMULTILINGUAL || f.Type == cHTML_MULTILINGUAL {
 			value = fieldValue.Interface()
-			for i := range ActiveLangs {
-				val := helper.PrepForHTML(Translate(fmt.Sprint(value), ActiveLangs[i].Code, false))
+			for i := range activeLangs {
+				val := helper.PrepForHTML(Translate(fmt.Sprint(value), activeLangs[i].Code, false))
 				f.Translations[i].Value = val
 				if f.ChangedBy != "" {
-					newVal := helper.PrepForHTML(Translate(fmt.Sprint(f.NewValue), ActiveLangs[i].Code, false))
+					newVal := helper.PrepForHTML(Translate(fmt.Sprint(f.NewValue), activeLangs[i].Code, false))
 					f.Translations[i].NewValue = newVal
-					oldVal := helper.PrepForHTML(Translate(fmt.Sprint(f.OldValue), ActiveLangs[i].Code, false))
+					oldVal := helper.PrepForHTML(Translate(fmt.Sprint(f.OldValue), activeLangs[i].Code, false))
 					f.Translations[i].OldValue = oldVal
 				}
 			}
