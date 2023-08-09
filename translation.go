@@ -43,11 +43,11 @@ func initializeLanguage() {
 	langList := []Language{}
 	if Count(&langList, "") != 0 {
 		// Setup Active languages
-		activeLangs = []Language{}
-		Filter(&activeLangs, "`active` = ?", true)
+		ActiveLangs = []Language{}
+		Filter(&ActiveLangs, "`active` = ?", true)
 
 		// Setup default language
-		Get(&defaultLang, "`default` = ?", true)
+		Get(&DefaultLang, "`default` = ?", true)
 		return
 	}
 
@@ -238,7 +238,7 @@ func initializeLanguage() {
 		{"Zhuang, Chuang", "Saɯ cueŋƅ, Saw cuengh", "za"},
 		{"Zulu", "isiZulu", "zu"},
 	}
-	activeLangs = []Language{}
+	ActiveLangs = []Language{}
 	tx := db.Begin()
 	for i, lang := range langs {
 		l := Language{
@@ -253,12 +253,17 @@ func initializeLanguage() {
 			l.Default = true
 		}
 		tx.Create(&l)
+		// add ukrainian as second active language
+		if l.Code == "uk" {
+			l.AvailableInGui = true
+			l.Active = true
+		}
 
 		if l.Active {
-			activeLangs = append(activeLangs, l)
+			ActiveLangs = append(ActiveLangs, l)
 		}
 		if l.Default {
-			defaultLang = l
+			DefaultLang = l
 		}
 		Trail(WORKING, "Initializing Languages: [%s%d/%d%s]", colors.FGGreenB, i+1, len(langs), colors.FGNormal)
 	}
@@ -282,8 +287,8 @@ func Translate(raw string, lang string, args ...bool) string {
 		return ""
 	}
 
-	Get(&defaultLang, "`default` = ?", true)
-	transtedStr = string(langParser[defaultLang.Code])
+	Get(&DefaultLang, "`default` = ?", true)
+	transtedStr = string(langParser[DefaultLang.Code])
 
 	if len(transtedStr) > 2 {
 		return transtedStr[1 : len(transtedStr)-1]
@@ -305,7 +310,7 @@ func Tf(path string, lang string, term string, args ...interface{}) string {
 	var err error
 	var buf []byte
 	if lang == "" {
-		lang = defaultLang.Code
+		lang = DefaultLang.Code
 	}
 
 	// Check if the path if for an existing model schema
@@ -456,13 +461,13 @@ func getLanguage(r *http.Request) Language {
 	langCookie, err := r.Cookie("language")
 
 	if err != nil || langCookie == nil {
-		return defaultLang
+		return DefaultLang
 	}
 
-	for _, l := range activeLangs {
+	for _, l := range ActiveLangs {
 		if l.Code == langCookie.Value {
 			return l
 		}
 	}
-	return defaultLang
+	return DefaultLang
 }

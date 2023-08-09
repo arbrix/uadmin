@@ -99,7 +99,7 @@ const VersionCodeName = "Housefly"
 // Public Global Variables
 
 // DefaultLang is the default language of the system.
-var defaultLang Language
+var DefaultLang Language
 
 // Theme is the name of the theme used in uAdmin.
 var Theme = "default"
@@ -496,7 +496,7 @@ var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
 var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 
 // Global active languages
-var activeLangs []Language
+var ActiveLangs []Language
 
 // langMapCache is a computer memory used for storage of frequently or recently used translations.
 var langMapCache = map[string][]byte{}

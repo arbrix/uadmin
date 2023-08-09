@@ -81,7 +81,7 @@ func syncCustomTranslation(path string) map[string]int {
 		if err != nil {
 			Trail(ERROR, "Invalid format of system translation file (%s). %s", fileName, err)
 		}
-		for _, lang := range activeLangs {
+		for _, lang := range ActiveLangs {
 			if lang.Code == "en" {
 				stat["en"] = len(langMap)
 				continue
@@ -258,7 +258,7 @@ func syncModelTranslation(m ModelSchema) map[string]int {
 	stat["en"] = fileCount
 
 	// Sync active languages
-	for _, lang := range activeLangs {
+	for _, lang := range ActiveLangs {
 		if lang.Code == "en" {
 			continue
 		}

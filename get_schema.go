@@ -224,7 +224,7 @@ func getSchema(a interface{}) (s ModelSchema, ok bool) {
 			} else {
 				f.Type = cMULTILINGUAL
 
-				for _, lang := range activeLangs {
+				for _, lang := range ActiveLangs {
 					f.Translations = append(f.Translations, translation{
 						Name:    fmt.Sprintf("%s (%s)", lang.Name, lang.EnglishName),
 						Code:    lang.Code,
