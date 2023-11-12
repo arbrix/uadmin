@@ -2,11 +2,15 @@ package uadmin
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	"gorm.io/gorm"
 	//_ "github.com/jinzhu/gorm/dialects/mssql"
@@ -17,12 +21,6 @@ import (
 
 	// Enable PostgreSQL
 	"gorm.io/driver/postgres"
-
-	"encoding/json"
-
-	"io/ioutil"
-	"net/http"
-	"time"
 
 	// Enable SQLLite
 	"github.com/uadmin/uadmin/colors"
@@ -1186,6 +1184,7 @@ func FilterBuilder(params map[string]interface{}) (query string, args []interfac
 // AdminPage !
 func AdminPage(order string, asc bool, offset int, limit int, a interface{}, query interface{}, args ...interface{}) (err error) {
 	if order != "" {
+		order = strings.ToLower(order)
 		orderby := " desc"
 		if asc {
 			orderby = " asc"
