@@ -7,14 +7,15 @@ import (
 // homeHandler !
 func homeHandler(w http.ResponseWriter, r *http.Request, session *Session) {
 	type Context struct {
-		User     string
-		Demo     bool
-		Menu     []DashboardMenu
-		SiteName string
-		Language Language
-		RootURL  string
-		Logo     string
-		FavIcon  string
+		User         string
+		Demo         bool
+		Menu         []DashboardMenu
+		SiteName     string
+		Language     Language
+		RootURL      string
+		Logo         string
+		FavIcon      string
+		DefaultModel interface{}
 	}
 
 	c := Context{}
@@ -25,6 +26,13 @@ func homeHandler(w http.ResponseWriter, r *http.Request, session *Session) {
 	c.User = session.User.Username
 	c.Logo = Logo
 	c.FavIcon = FavIcon
+	c.DefaultModel = DefaultModel
+
+	if DefaultModel != nil {
+		modelName := getModelName(DefaultModel)
+		http.Redirect(w, r, c.RootURL+"/"+modelName+"/", http.StatusSeeOther)
+		return
+	}
 
 	c.Menu = session.User.GetDashboardMenu()
 	for i := range c.Menu {
