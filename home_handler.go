@@ -7,15 +7,14 @@ import (
 // homeHandler !
 func homeHandler(w http.ResponseWriter, r *http.Request, session *Session) {
 	type Context struct {
-		User         string
-		Demo         bool
-		Menu         []DashboardMenu
-		SiteName     string
-		Language     Language
-		RootURL      string
-		Logo         string
-		FavIcon      string
-		DefaultModel interface{}
+		User     string
+		Demo     bool
+		Menu     []DashboardMenu
+		SiteName string
+		Language Language
+		RootURL  string
+		Logo     string
+		FavIcon  string
 	}
 
 	c := Context{}
