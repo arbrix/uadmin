@@ -155,8 +155,8 @@ var EmailSMTPServerPort int
 // RootURL is where the listener is mapped to.
 var RootURL = "/"
 
-// Default model load
-var DefaultModel interface{} = nil
+// Model will be loaded on Dashboard on start page
+var DefaultModelLoad interface{} = nil
 
 // OTPAlgorithm is the hashing algorithm of OTP.
 var OTPAlgorithm = "sha1"

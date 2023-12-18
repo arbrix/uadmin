@@ -26,10 +26,9 @@ func homeHandler(w http.ResponseWriter, r *http.Request, session *Session) {
 	c.User = session.User.Username
 	c.Logo = Logo
 	c.FavIcon = FavIcon
-	c.DefaultModel = DefaultModel
 
-	if DefaultModel != nil {
-		modelName := getModelName(DefaultModel)
+	if DefaultModelLoad != nil {
+		modelName := getModelName(DefaultModelLoad)
 		http.Redirect(w, r, c.RootURL+"/"+modelName+"/", http.StatusSeeOther)
 		return
 	}
