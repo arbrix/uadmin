@@ -26,8 +26,3 @@ func (g *GroupPermission) Save() {
 	Save(g)
 	loadPermissions()
 }
-
-// HideInDashboard to return false and auto hide this from dashboard
-func (GroupPermission) HideInDashboard() bool {
-	return true
-}
