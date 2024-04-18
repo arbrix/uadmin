@@ -40,9 +40,3 @@ func (u *UserGroup) hasAccess(modelName string) GroupPermission {
 	}
 	return up
 }
-
-// HideInDashboard indicates that startup register call
-// should hide this model in dashboard menu
-func (UserGroup) HideInDashboard() bool {
-	return true
-}
