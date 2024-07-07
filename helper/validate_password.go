@@ -11,14 +11,18 @@ import (
 
 const (
 	minPasswordLengths = 14
+	minPasswordRate    = 80
+	dictionaryPath     = "PASS_DICTIONARY_PATH"
 )
 
 var (
-	ErrLength = errors.New("password is too short")
-	ErrUpper  = errors.New("password should contains at least one uppercase letter")
-	ErrLow    = errors.New("password should contains at least one lowercase letter")
-	ErrNum    = errors.New("password should contains at least one digit")
-	ErrSymbol = errors.New("password should contains at least one special symbol: @$!%*?&")
+	ErrLength = fmt.Errorf("password is too short, please enter at least %d characters", minPasswordLengths)
+	ErrUpper  = errors.New("password does not contain at least one uppercase letter")
+	ErrLow    = errors.New("password does not contain at least one lowercase letter")
+	ErrWeak   = errors.New("password is too weak")
+
+	uppercasePattern = regexp.MustCompile(`[A-Z]`)
+	lowercasePattern = regexp.MustCompile(`[a-z]`)
 )
 
 type PasswordValidator interface {
@@ -35,44 +39,36 @@ func NewPasswordValidator() PasswordValidator {
 	if validator != nil {
 		return validator
 	}
-	dictionaryPath := os.Getenv("PASS_DICTIONARY_PATH") // path from user
+	path := os.Getenv(dictionaryPath) // path from user
 	validator := &passwordValidator{
 		validator: crunchy.NewValidatorWithOpts(crunchy.Options{
-			DictionaryPath: dictionaryPath, // is path is empty, crunchy will use default value  "/usr/share/dict"
+			DictionaryPath:    path, // if the path is empty, crunchy will use the default value  "/usr/share/dict"
+			MinLength:         minPasswordLengths,
+			MustContainDigit:  true,
+			MustContainSymbol: true,
 		}),
 	}
 	return validator
 }
 
 func (p *passwordValidator) Validate(pass string) error {
-
-	if len(pass) < minPasswordLengths {
-		return ErrLength
+	rate, err := p.validator.Rate(pass)
+	if err != nil {
+		if errors.Is(err, crunchy.ErrTooShort) {
+			return ErrLength // return more user-friendly message
+		}
+		return err
 	}
-
-	uppercase := regexp.MustCompile(`[A-Z]`)
-	if !uppercase.MatchString(pass) {
+	if rate > minPasswordRate {
+		return nil
+	}
+	// crunchy doesn't return err if the pass doesn't contain upper/lower case letter
+	// we need to check the pass to return a more user-friendly message
+	if !uppercasePattern.MatchString(pass) {
 		return ErrUpper
 	}
-
-	lowercase := regexp.MustCompile(`[a-z]`)
-	if !lowercase.MatchString(pass) {
+	if !lowercasePattern.MatchString(pass) {
 		return ErrLow
 	}
-
-	number := regexp.MustCompile(`\d`)
-	if !number.MatchString(pass) {
-		return ErrNum
-	}
-
-	specialChar := regexp.MustCompile(`[@$!%*?&]`)
-	if !specialChar.MatchString(pass) {
-		return ErrSymbol
-	}
-
-	err := p.validator.Check(pass)
-	if err != nil {
-		return fmt.Errorf("weak pass: %s", err)
-	}
-	return nil
+	return ErrWeak
 }

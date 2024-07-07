@@ -23,8 +23,18 @@ func Test_Validate(t *testing.T) {
 		},
 		{
 			name:     "failed, password is too short",
-			arg:      "",
+			arg:      "1q?btAjhpztqn",
 			expError: ErrLength,
+		},
+		{
+			name:     "failed, password is empty",
+			arg:      "",
+			expError: fmt.Errorf("Password is empty or all whitespace"),
+		},
+		{
+			name:     "failed, password contains whitespace",
+			arg:      "aA!1           ",
+			expError: fmt.Errorf("Password does not contain enough different/unique characters"),
 		},
 		{
 			name:     "failed, password should contains at least one uppercase letter",
@@ -39,17 +49,22 @@ func Test_Validate(t *testing.T) {
 		{
 			name:     "failed, password should contains at least one digit",
 			arg:      "aq?btAjhpztqnln",
-			expError: ErrNum,
+			expError: fmt.Errorf("Password does not contain any digits"),
 		},
 		{
 			name:     "failed, password should contains at least one special symbol",
 			arg:      "aq1Btajhpztqnln",
-			expError: ErrSymbol,
+			expError: fmt.Errorf("Password does not contain any special symbols"),
 		},
 		{
 			name:     "failed, password should contains don't repeat parts",
 			arg:      "1234567812345678?Aa",
-			expError: fmt.Errorf("weak pass: Password is too systematic"),
+			expError: fmt.Errorf("Password is too systematic"),
+		},
+		{
+			name:     "failed, password too weak",
+			arg:      "qqqqqtyuiopA1@",
+			expError: ErrWeak,
 		},
 	}
 	for _, tc := range testCases {
@@ -82,5 +97,5 @@ func Test_Validate_search_in_dictionary(t *testing.T) {
 
 	err = v.Validate("123PasswordFromDictionary!")
 	require.NotNil(t, err)
-	assert.Equal(t, "weak pass: Password is too common / from a dictionary", err.Error())
+	assert.Equal(t, "Password is too common / from a dictionary", err.Error())
 }
