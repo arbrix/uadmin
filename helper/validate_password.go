@@ -55,15 +55,19 @@ func (p *passwordValidator) Validate(pass string) error {
 	rate, err := p.validator.Rate(pass)
 	if err != nil {
 		if errors.Is(err, crunchy.ErrTooShort) {
-			return ErrLength // return more user-friendly message
+			return ErrLength // error with expected pass lengths
 		}
 		return err
 	}
-	if rate > minPasswordRate {
-		return nil
-	}
 	// crunchy doesn't return err if the pass doesn't contain upper/lower case letter
 	// we need to check the pass to return a more user-friendly message
+	if rate < minPasswordRate {
+		return handleLowPwdRate(pass)
+	}
+	return nil
+}
+
+func handleLowPwdRate(pass string) error {
 	if !uppercasePattern.MatchString(pass) {
 		return ErrUpper
 	}
