@@ -95,7 +95,7 @@ func (u *User) Login(pass string, otp string) *Session {
 		s.LastLogin = time.Now()
 		if u.OTPRequired {
 			if otp == "" {
-				Trail(INFO, "OTP login for: %s is %s", u.Username, u.GetOTP())
+				Trail(INFO, "OTP login for: %s", u.Username)
 				s.PendingOTP = true
 			} else {
 				s.PendingOTP = !u.VerifyOTP(otp)
