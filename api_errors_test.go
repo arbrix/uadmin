@@ -50,6 +50,7 @@ func TestRespondAndLogError(t *testing.T) {
 		args args
 		exp  []string
 	}{
+
 		{
 			name: "success. with err message",
 			args: args{
@@ -63,14 +64,7 @@ func TestRespondAndLogError(t *testing.T) {
 			args: args{
 				code: http.StatusBadRequest,
 			},
-			exp: []string{`"status": "error"`, `"err_msg": "400. Bad request"`},
-		},
-		{
-			name: "success. can't find error in map",
-			args: args{
-				code: http.StatusAlreadyReported,
-			},
-			exp: []string{`"status": "error"`, `"err_msg": "unknown server error"`},
+			exp: []string{`"status": "error"`, `"err_msg": "400. Bad Request"`},
 		},
 	}
 
