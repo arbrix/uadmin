@@ -9,7 +9,6 @@ const (
 	contentTypeHeader = "Content-Type"
 	jsonContentType   = "application/json; charset=utf-8"
 	errStatus         = "error"
-	defaultErrorMsg   = "unknown server error"
 )
 
 func RespondAndLogError(w http.ResponseWriter, r *http.Request, code int, errMsg string, err error) {
@@ -17,12 +16,7 @@ func RespondAndLogError(w http.ResponseWriter, r *http.Request, code int, errMsg
 	logError(r, errMsg, err)
 
 	if errMsg == "" {
-		if code < 100 || code > 511 {
-			code = http.StatusInternalServerError
-			errMsg = defaultErrorMsg
-		} else {
-			errMsg = fmt.Sprintf("%d. %s", code, http.StatusText(code))
-		}
+		errMsg = fmt.Sprintf("%d. %s", code, http.StatusText(code))
 	}
 	w.Header().Set(contentTypeHeader, jsonContentType)
 	w.WriteHeader(code)
