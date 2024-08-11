@@ -437,6 +437,11 @@ func ClearDB() {
 	db = nil
 }
 
+// Set mockDB for testing purpose
+func SetDB(mockDB *gorm.DB) {
+	db = mockDB
+}
+
 // All fetches all object in the database
 func All(a interface{}) (err error) {
 	TimeMetric("uadmin/db/duration", 1000, func() {
