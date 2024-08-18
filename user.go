@@ -78,8 +78,6 @@ func (u *User) Login(pass string, otp string) *Session {
 		return nil
 	}
 
-	CheckoutCookieTimeout()
-
 	err := verifyPassword(u.Password, pass)
 	if err == nil && u.ID != 0 {
 		s := u.GetActiveSession()
