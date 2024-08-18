@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"math/big"
 	"net"
+	"os"
 	"path"
 
 	"crypto/hmac"
@@ -24,6 +25,7 @@ import (
 // If the value is -1, then the session cookie will not have
 // an expiry date.
 var CookieTimeout = -1
+var defaultCookieTimeout = (time.Hour * 24).Seconds() // 24 hours in seconds
 
 // Salt is added to password hashing
 var Salt = ""
@@ -108,6 +110,19 @@ func IsAuthenticated(r *http.Request) *Session {
 		return s
 	}
 	return nil
+}
+
+// CheckoutCookieTimeout checks if CookieTimeout should be set to a custom value,
+// or use the default value
+func CheckoutCookieTimeout() {
+	CookieTimeout = int(defaultCookieTimeout)
+
+	if ct := os.Getenv("COOKIE_TIMEOUT_SECONDS"); ct != "" {
+		timeout, err := strconv.Atoi(ct)
+		if err == nil {
+			CookieTimeout = int(timeout)
+		}
+	}
 }
 
 // SetSessionCookie sets the session cookie value, The the value passed in
