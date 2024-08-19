@@ -90,7 +90,7 @@ func (u *User) Login(pass string, otp string) *Session {
 		}
 		s.LastLogin = time.Now()
 		if CookieTimeout > -1 {
-			ExpiresOn := s.LoginTime.Add(time.Second * time.Duration(CookieTimeout))
+			ExpiresOn := s.LastLogin.Add(time.Second * time.Duration(CookieTimeout))
 			s.ExpiresOn = &ExpiresOn
 		}
 		if u.OTPRequired {
