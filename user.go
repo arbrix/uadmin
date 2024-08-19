@@ -87,12 +87,12 @@ func (u *User) Login(pass string, otp string) *Session {
 			s.UserID = u.ID
 			s.LoginTime = time.Now()
 			s.GenerateKey()
-			if CookieTimeout > -1 {
-				ExpiresOn := s.LoginTime.Add(time.Second * time.Duration(CookieTimeout))
-				s.ExpiresOn = &ExpiresOn
-			}
 		}
 		s.LastLogin = time.Now()
+		if CookieTimeout > -1 {
+			ExpiresOn := s.LoginTime.Add(time.Second * time.Duration(CookieTimeout))
+			s.ExpiresOn = &ExpiresOn
+		}
 		if u.OTPRequired {
 			if otp == "" {
 				Trail(INFO, "OTP login for: %s", u.Username)
