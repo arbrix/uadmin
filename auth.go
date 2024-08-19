@@ -83,7 +83,8 @@ func GenerateBase32(length int) string {
 	return tempKey
 }
 
-func preparePass(pass string) []byte {
+// saltPassword prepares password to use in bcrypt algorithms
+func saltPassword(pass string) []byte {
 	password := []byte(pass + Salt)
 	if len(password) > 72 {
 		password = password[:72]
@@ -93,7 +94,7 @@ func preparePass(pass string) []byte {
 
 // hashPass Generates a hash from a password and salt
 func hashPass(pass string) string {
-	password := preparePass(pass)
+	password := saltPassword(pass)
 	hash, err := bcrypt.GenerateFromPassword(password, bcryptDiff)
 	if err != nil {
 		Trail(ERROR, "uadmin.auth.hashPass.GenerateFromPassword: %s", err)
@@ -796,7 +797,7 @@ func GetSchema(r *http.Request) string {
 }
 
 func verifyPassword(hash string, plain string) error {
-	password := preparePass(plain)
+	password := saltPassword(plain)
 	hashedPassword := []byte(hash)
 	if len(hashedPassword) > 72 {
 		hashedPassword = hashedPassword[:72]
