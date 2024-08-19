@@ -360,7 +360,7 @@ func (t *UAdminTests) TestSetCookieTimeout() {
 	// set default value
 	SetCookieTimeout()
 	if CookieTimeout != defaultCookieTimeout {
-		t.Errorf("Wrong defaultCookieTimeout value — expecting the default value: %d", defaultCookieTimeout)
+		t.Errorf("Got wrong CookieTimeout value: %d, The default value is expected: %d", CookieTimeout, defaultCookieTimeout)
 	}
 
 	// set custom value
@@ -368,7 +368,7 @@ func (t *UAdminTests) TestSetCookieTimeout() {
 	SetCookieTimeout()
 	expected := 123
 	if CookieTimeout != expected {
-		t.Errorf("Wrong defaultCookieTimeout value — expecting value: %d", expected)
+		t.Errorf("Got wrong CookieTimeout value: %d, Expected value: %d", CookieTimeout, expected)
 	}
 	os.Unsetenv("COOKIE_TIMEOUT_SECONDS")
 }
