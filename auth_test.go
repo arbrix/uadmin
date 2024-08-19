@@ -391,10 +391,11 @@ func (t *UAdminTests) TestLogin() {
 	u1.Save()
 
 	// expired user
+	u2Pass := "u2"+testPassword
 	u2 := User{}
 	u2.FirstName = "u2"
 	u2.Username = "u2"
-	u2.Password = "u2"+testPassword
+	u2.Password = u2Pass
 	u2.Active = true
 	u2.Admin = false
 	u2.RemoteAccess = false
@@ -455,15 +456,16 @@ func (t *UAdminTests) TestLogin() {
 		{"tc_18", "", "u4", nil},
 		{"tc_19", "u4", "", nil},
 		{"tc_20", "u4", GenerateBase64(10), nil},
+		{"tc_21", "u2", u2Pass, &u2},
 	}
 	r := httptest.NewRequest("GET", "/", nil)
 
 	for _, e := range examples {
-		tempU, otpRequired := Login(r, e.username, e.password)
-		if (tempU == nil && e.u != nil) || (tempU != nil && e.u == nil) {
-			t.Errorf("Test #%s: Invalid output from Login: %v, expected %v", e.testname, tempU, e.u)
-		} else if (tempU != nil && e.u != nil) && (tempU.User.ID != e.u.ID) {
-			t.Errorf("Test #%s: Invalid user ID from Login: %v, expected %v", e.testname, tempU.User.ID, e.u.ID)
+		session, otpRequired := Login(r, e.username, e.password)
+		if (session == nil && e.u != nil) || (session != nil && e.u == nil) {
+			t.Errorf("Test #%s: Invalid output from Login: %v, expected %v", e.testname, session, e.u)
+		} else if (session != nil && e.u != nil) && (session.User.ID != e.u.ID) {
+			t.Errorf("Test #%s: Invalid user ID from Login: %v, expected %v", e.testname, session.User.ID, e.u.ID)
 		} else if (e.u != nil) && (otpRequired != e.u.OTPRequired) {
 			t.Errorf("Test #%s: Invalid OTPRequired output from Login: %v, expected %v", e.testname, otpRequired, e.u.OTPRequired)
 		}
