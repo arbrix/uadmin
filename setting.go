@@ -292,7 +292,7 @@ func (s *Setting) ApplyValue() {
 	case "uAdmin.RemoveZeroValueJSON":
 		RemoveZeroValueJSON = v.(bool)
 	case "uAdmin.RateLimitCacheCapacity":
-		RateLimitCacheCapacity = int64(v.(int))
+		RateLimitCacheCapacity = v.(int)
 	}
 }
 
@@ -856,9 +856,9 @@ func syncSystemSettings() {
 		{
 			Name:         "Rate Limit Cache Capacity",
 			Value:        fmt.Sprint(RateLimitCacheCapacity),
-			DefaultValue: "3",
+			DefaultValue: "1024",
 			DataType:     t.Integer(),
-			Help:         "is the maximum number of requests for an idle user",
+			Help:         "is the maximum number users in cache",
 		},
 	}
 

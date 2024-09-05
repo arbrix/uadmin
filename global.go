@@ -233,7 +233,7 @@ var RateLimit int64 = 3
 var RateLimitBurst int64 = 3
 
 // RateLimitCacheCapacity is the maximum number users in cache
-var RateLimitCacheCapacity int64 = 1024
+var RateLimitCacheCapacity int = 1024
 
 // OptimizeSQLQuery selects columns during rendering a form a list to visible fields.
 // This means during the filtering of a form the select statement will not include
