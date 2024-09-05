@@ -291,6 +291,8 @@ func (s *Setting) ApplyValue() {
 		CompressJSON = v.(bool)
 	case "uAdmin.RemoveZeroValueJSON":
 		RemoveZeroValueJSON = v.(bool)
+	case "uAdmin.RateLimitCacheCapacity":
+		RateLimitCacheCapacity = int64(v.(int))
 	}
 }
 
@@ -850,6 +852,13 @@ func syncSystemSettings() {
 			DefaultValue: "0",
 			DataType:     t.Boolean(),
 			Help:         "Compress JSON allows the system to reduce the size of json responses",
+		},
+		{
+			Name:         "Rate Limit Cache Capacity",
+			Value:        fmt.Sprint(RateLimitCacheCapacity),
+			DefaultValue: "3",
+			DataType:     t.Integer(),
+			Help:         "is the maximum number of requests for an idle user",
 		},
 	}
 
