@@ -3,6 +3,12 @@ package uadmin
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/arbrix/uadmin/helper"
+)
+
+var (
+	passwordValidator = helper.NewPasswordValidator()
 )
 
 // profileHandler !
@@ -84,6 +90,9 @@ func profileHandler(w http.ResponseWriter, r *http.Request, session *Session) {
 			} else if newPassword != confirmPassword {
 				c.Status = true
 				c.Notif = "New password and confirm password do not match."
+			} else if err := passwordValidator.Validate(newPassword); err != nil {
+				c.Status = true
+				c.Notif = fmt.Sprintf("New password validation error: %s", err)
 			} else {
 				user.Password = hashPass(newPassword)
 				user.Save()
