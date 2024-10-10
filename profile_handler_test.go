@@ -93,6 +93,7 @@ func (t *UAdminTests) TestProfileHandler() {
 			},
 			[]attrExample{},
 		},
+		//TODO: update test, add test with weak new password
 		{
 			httptest.NewRequest("POST", "/", nil),
 			http.StatusOK,

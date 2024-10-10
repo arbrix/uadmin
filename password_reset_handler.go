@@ -1,6 +1,7 @@
 package uadmin
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -60,6 +61,9 @@ func passwordResetHandler(w http.ResponseWriter, r *http.Request) {
 		if r.FormValue("password") != r.FormValue("confirm_password") {
 			c.ErrExists = true
 			c.Err = "Password does not match the confirm password"
+		} else if err := passwordValidator.Validate(r.FormValue("password")); err != nil {
+			c.ErrExists = true
+			c.Err = fmt.Sprintf("New password validation error: %s", err)
 		} else {
 			user.Password = hashPass(r.FormValue("password"))
 			user.Save()
