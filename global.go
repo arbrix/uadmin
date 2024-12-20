@@ -232,6 +232,25 @@ var RateLimit int64 = 3
 // RateLimitBurst is the maximum number of requests for an idle user
 var RateLimitBurst int64 = 3
 
+// RateLimitCacheCapacity is the maximum number users in cache
+var RateLimitCacheCapacity = 1024
+
+// RateLimitEventFrequency defines the maximum frequency of some events
+// and represented as number of events per second. A zero Limit allows no events
+var RateLimitEventFrequency = 0.5
+
+// RateLimitTokenNumber is the number of tokens
+var RateLimitTokenNumber = 10
+
+// RateLimitBlockedMinutes is the number of minutes to block a user
+var RateLimitBlockedMinutes = 10
+
+// CSRFCacheDefaultExpiration is the number of minutes for token to expire
+var CSRFCacheDefaultExpiration = 30
+
+// CSRFCacheCleanupInterval is the number of hours to clear expired cache
+var CSRFCacheCleanupInterval = 24
+
 // OptimizeSQLQuery selects columns during rendering a form a list to visible fields.
 // This means during the filtering of a form the select statement will not include
 // any field with `hidden` tag. For list it will not select any field with `list_exclude`
