@@ -84,7 +84,7 @@ const cEMAIL = "email"
 const cM2M = "m2m"
 
 // Version number as per Semantic Versioning 2.0.0 (semver.org)
-const Version = "0.10.0"
+const Version = "0.10.1"
 
 // VersionCodeName is the cool name we give to versions with significant changes.
 // This name should always be a bug's name starting from A-Z them revolving back.
@@ -511,6 +511,9 @@ var CompressJSON = false
 
 // CompressJSON is a variable that allows the user to reduce the size of JSON responses
 var RemoveZeroValueJSON = false
+
+// SSOURL enables SSO using OpenID Connect
+var SSOURL = ""
 
 // Private Global Variables
 // Regex
