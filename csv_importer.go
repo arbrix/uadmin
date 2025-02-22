@@ -221,8 +221,8 @@ func getPopulatedModel(modelName string, objectDescription csvEntry, fieldsList 
 				// TODO: this works for one use-case only. To make it general, we need a way to
 				// pass FK FieldName with this value (see `data[idx]` above) in a csv file
 				hardcoded := "name"
-				q := fmt.Sprintf("%s::jsonb->>'%s' = '%s'", hardcoded, objectDescription.Langs[0], langToFieldsMap[objectDescription.Langs[0]])
-				err := Get(m.Interface(), q)
+				q := fmt.Sprintf("%s::jsonb->>? = ?", toSnakeCase(hardcoded))
+				err := Get(m.Interface(), q, objectDescription.Langs[0], langToFieldsMap[objectDescription.Langs[0]])
 				if err != nil && err.Error() != "record not found" {
 					Trail(ERROR, "query '%s' is failed: %v", q, err)
 					return nilValue, err
