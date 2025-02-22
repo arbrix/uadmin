@@ -32,9 +32,6 @@ func CSVImporterHandler(w http.ResponseWriter, r *http.Request, session *Session
 		return
 	}
 
-	modelName := r.FormValue("m")
-	s, _ := getSchema(modelName)
-
 	modelDataMapping, err := getModelDataMapping(csvFileRows)
 	if err != nil {
 		Trail(ERROR, err.Error())
@@ -42,10 +39,13 @@ func CSVImporterHandler(w http.ResponseWriter, r *http.Request, session *Session
 		return
 	}
 
+	modelName := r.FormValue("m")
+	s, _ := getSchema(modelName)
+	fields := getFieldsList(s) // we rely on this order
+
 	for _, objectDescription := range modelDataMapping {
 		var model reflect.Value
 		var err error
-		fields := getFieldsList(s)
 
 		ok, err := objectExists(modelName, objectDescription, fields)
 		if err != nil {
@@ -96,6 +96,8 @@ func getModelDataMapping(csvFileRows []string) ([]csvEntry, error) {
 	csvEntries := map[string]csvEntry{}
 	ids := []string{}
 	for _, row := range csvFileRows {
+		//TODO AW: first you need to add escape character to row for all the cases that can be a problem during query
+		// row = addEscapeCharacter(row)
 		rowData := strings.Split(row, ";")
 		if len(rowData) < 3 { // expected at least 3 fields: row id, lang, model field (one or more)
 			return nil, fmt.Errorf("csv file row doesn't have any model data")
@@ -134,7 +136,7 @@ type fieldDescriptor struct {
 	FKModelName string
 }
 
-// returns a list of a model fields in order they are defined, marks foreign keys in the list
+// returns a list of a model fields in the order they are defined, marks foreign keys in the list
 func getFieldsList(s ModelSchema) []fieldDescriptor {
 	var list []fieldDescriptor
 	for _, f := range s.Fields {
@@ -160,16 +162,15 @@ func getFieldsList(s ModelSchema) []fieldDescriptor {
 func objectExists(modelName string, objectDescription csvEntry, fieldsList []fieldDescriptor) (bool, error) {
 	lang := objectDescription.Langs[0]
 	fields := objectDescription.Fields[lang]
-	q := ""
+
+	var conditions []string
+	var values []interface{}
 	for idx, fieldDesc := range fieldsList {
 		if fieldDesc.Type == "fk" {
 			continue
 		}
-		if idx != 0 {
-			q += " AND "
-		}
-
-		q += fmt.Sprintf("%s::jsonb->>'%s' = '%s'", toSnakeCase(fieldDesc.Name), lang, fields[idx])
+		conditions = append(conditions, fmt.Sprintf("%s::jsonb->>? = ?", toSnakeCase(fieldDesc.Name)))
+		values = append(values, lang, fields[idx])
 	}
 
 	var model reflect.Value
@@ -178,9 +179,10 @@ func objectExists(modelName string, objectDescription csvEntry, fieldsList []fie
 		return false, fmt.Errorf("bad model: %s", modelName)
 	}
 
-	err := Get(model.Interface(), q)
+	query := strings.Join(conditions, " AND ")
+	err := Get(model.Interface(), query, values...)
 	if err != nil && err.Error() != "record not found" {
-		Trail(ERROR, "query '%s' is failed: %v", q, err)
+		Trail(ERROR, "query '%s' is failed: %v", query, err)
 		return false, err
 	}
 	if err == nil && GetID(model) != 0 {
