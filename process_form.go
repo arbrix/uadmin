@@ -544,10 +544,7 @@ func processForm(modelName string, w http.ResponseWriter, r *http.Request, sessi
 // SaveRecord saves the record,
 // a model is represented by a pointer (see NewModel(arg, true) function)
 func SaveRecord(model reflect.Value) {
-	var saverI saver
-	var ok bool
-	saverI, ok = model.Interface().(saver)
-	if !ok {
+	if saverI, ok := model.Interface().(saver); !ok {
 		Save(model.Elem().Addr().Interface())
 	} else {
 		saverI.Save()

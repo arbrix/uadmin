@@ -44,9 +44,6 @@ func CSVImporterHandler(w http.ResponseWriter, r *http.Request, session *Session
 	fields := getFieldsList(s) // we rely on this order
 
 	for _, objectDescription := range modelDataMapping {
-		var model reflect.Value
-		var err error
-
 		ok, err := objectExists(modelName, objectDescription, fields)
 		if err != nil {
 			Trail(ERROR, err.Error())
@@ -56,7 +53,8 @@ func CSVImporterHandler(w http.ResponseWriter, r *http.Request, session *Session
 			continue
 		}
 
-		if model, err = getPopulatedModel(modelName, objectDescription, fields); err != nil {
+		model, err := getPopulatedModel(modelName, objectDescription, fields)
+		if err != nil {
 			Trail(ERROR, "failed to process model %v", err.Error())
 			http.Error(w, "failed to process model", http.StatusBadRequest)
 			return
@@ -96,8 +94,6 @@ func getModelDataMapping(csvFileRows []string) ([]csvEntry, error) {
 	csvEntries := map[string]csvEntry{}
 	ids := []string{}
 	for _, row := range csvFileRows {
-		//TODO AW: first you need to add escape character to row for all the cases that can be a problem during query
-		// row = addEscapeCharacter(row)
 		rowData := strings.Split(row, ";")
 		if len(rowData) < 3 { // expected at least 3 fields: row id, lang, model field (one or more)
 			return nil, fmt.Errorf("csv file row doesn't have any model data")
@@ -222,7 +218,8 @@ func getPopulatedModel(modelName string, objectDescription csvEntry, fieldsList 
 				// pass FK FieldName with this value (see `data[idx]` above) in a csv file
 				hardcoded := "name"
 				q := fmt.Sprintf("%s::jsonb->>? = ?", toSnakeCase(hardcoded))
-				err := Get(m.Interface(), q, objectDescription.Langs[0], langToFieldsMap[objectDescription.Langs[0]])
+				fields := langToFieldsMap[objectDescription.Langs[0]]
+				err := Get(m.Interface(), q, objectDescription.Langs[0], fields)
 				if err != nil && err.Error() != "record not found" {
 					Trail(ERROR, "query '%s' is failed: %v", q, err)
 					return nilValue, err
@@ -230,7 +227,7 @@ func getPopulatedModel(modelName string, objectDescription csvEntry, fieldsList 
 				if (err != nil && err.Error() != "record not found") || GetID(m) == 0 {
 					// TODO: probably, we want to avoid creating FK object in this handler since such a struct might require data we don't have here
 					// TODO: this works for one use-case only.
-					Trail(INFO, "no record for the query: '%s', going to create a new one", q)
+					Trail(INFO, "no record for: '%s', going to create a new one", fields)
 					hardcodedFN := "Name"
 					// foreign key model's field
 					if field := m.Elem().FieldByName(hardcodedFN); field.IsValid() && field.CanSet() {
