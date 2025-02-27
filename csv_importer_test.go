@@ -25,10 +25,10 @@ func Test_getModelDataMapping(t *testing.T) {
 	if len(entries) != 1 {
 		t.Errorf("expected 1 entry, got %d", len(entries))
 	}
-	if entries[0].Fields["en"][0] != "test" {
-		t.Errorf("expected 'test', got %s", entries[0].Fields["en"][0])
+	if entries[0].LangFields["en"][0] != "test" {
+		t.Errorf("expected 'test', got %s", entries[0].LangFields["en"][0])
 	}
-	if entries[0].Fields["en"][1] != "fields" {
-		t.Errorf("expected 'fields', got %s", entries[0].Fields["en"][1])
+	if entries[0].LangFields["en"][1] != "fields" {
+		t.Errorf("expected 'fields', got %s", entries[0].LangFields["en"][1])
 	}
 }

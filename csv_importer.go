@@ -43,6 +43,14 @@ func CSVImporterHandler(w http.ResponseWriter, r *http.Request, session *Session
 	s, _ := getSchema(modelName)
 	fields := getFieldsList(s) // we rely on this order
 
+	csvItem := modelDataMapping[0]
+	csvItemFieldsNum := len(csvItem.LangFields[csvItem.Langs[0]])
+	if len(fields) != csvItemFieldsNum {
+		Trail(ERROR, "received wrong number of fields. Model has %d fields, received %d", len(fields), csvItemFieldsNum)
+		http.Error(w, "received wrong number of fields", http.StatusBadRequest)
+		return
+	}
+
 	for _, objectDescription := range modelDataMapping {
 		ok, err := objectExists(modelName, objectDescription, fields)
 		if err != nil {
@@ -77,8 +85,8 @@ func CSVImporterHandler(w http.ResponseWriter, r *http.Request, session *Session
 
 // language-values mapping for the csv file object description
 type csvEntry struct {
-	Langs  []string
-	Fields map[string][]string
+	Langs      []string
+	LangFields map[string][]string // map fields to a lang
 }
 
 // returns a list of models descriptions from the provided csv file data
@@ -105,14 +113,14 @@ func getModelDataMapping(csvFileRows []string) ([]csvEntry, error) {
 		if entry, ok := csvEntries[rowID]; ok {
 			// add another one language
 			entry.Langs = append(entry.Langs, rowLang)
-			entry.Fields[rowLang] = rowData[2:]
+			entry.LangFields[rowLang] = rowData[2:]
 			csvEntries[rowID] = entry
 		} else {
 			ids = append(ids, rowID)
 			// add a new entry
 			csvEntries[rowID] = csvEntry{
 				Langs:  []string{rowLang},
-				Fields: map[string][]string{rowLang: rowData[2:]},
+				LangFields: map[string][]string{rowLang: rowData[2:]},
 			}
 		}
 	}
@@ -157,7 +165,7 @@ func getFieldsList(s ModelSchema) []fieldDescriptor {
 
 func objectExists(modelName string, objectDescription csvEntry, fieldsList []fieldDescriptor) (bool, error) {
 	lang := objectDescription.Langs[0]
-	fields := objectDescription.Fields[lang]
+	fields := objectDescription.LangFields[lang]
 
 	var conditions []string
 	var values []interface{}
@@ -199,7 +207,7 @@ func getPopulatedModel(modelName string, objectDescription csvEntry, fieldsList 
 		if field := model.Elem().FieldByName(fieldDesc.Name); field.IsValid() && field.CanSet() {
 			langToFieldsMap := map[string]string{} // will be marshaled to a string like `{"en":"value"}`
 			for _, lang := range objectDescription.Langs {
-				fields := objectDescription.Fields[lang] // the values for all the fields of this model description in this lang
+				fields := objectDescription.LangFields[lang] // the values for all the fields of this model description in this lang
 				langToFieldsMap[lang] = fields[idx]
 			}
 
