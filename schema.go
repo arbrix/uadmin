@@ -26,6 +26,7 @@ type ModelSchema struct {
 	ListModifier  func(*ModelSchema, *User) (string, []interface{}) `json:"-"`
 	FormTheme     string
 	ListTheme     string
+	CSVImporter   bool
 }
 
 // FieldByName returns a field from a ModelSchema by name or nil if
@@ -85,6 +86,7 @@ func (s ModelSchema) MarshalJSON() ([]byte, error) {
 		ListModifier  *string
 		FormTheme     string
 		ListTheme     string
+		CSVImporter   bool
 	}{
 		Name:          s.Name,
 		DisplayName:   s.DisplayName,
@@ -110,8 +112,9 @@ func (s ModelSchema) MarshalJSON() ([]byte, error) {
 			v := runtime.FuncForPC(reflect.ValueOf(s.ListModifier).Pointer()).Name()
 			return &v
 		}(),
-		FormTheme: s.FormTheme,
-		ListTheme: s.ListTheme,
+		FormTheme:   s.FormTheme,
+		ListTheme:   s.ListTheme,
+		CSVImporter: s.CSVImporter,
 	})
 }
 
