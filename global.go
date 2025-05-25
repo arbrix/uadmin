@@ -539,3 +539,9 @@ var handlersRegistered = false
 var defaultProgressBarColor = "#07c"
 
 var settingsSynched = false
+
+// MaxFileSizeInUserForm is the maximum file size in bytes for a file upload in user form
+var MaxFileSizeInUserInput = int64(5 * 1024 * 1024)
+
+// MaxFilesCountInUserForm is the maximum number of files that user can upload in single form input
+var MaxFilesCountPerUserInput = 5
