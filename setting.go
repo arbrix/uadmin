@@ -303,6 +303,10 @@ func (s *Setting) ApplyValue() {
 		CSRFCacheDefaultExpiration = v.(int)
 	case "uAdmin.CSRFCacheCleanupInterval":
 		CSRFCacheCleanupInterval = v.(int)
+	case "uAdmin.MaxUploadFileSizeInUserInputForm":
+		MaxFileSizeInUserInput = int64(v.(int))
+	case "uAdmin.MaxFileCountInUserInputForm":
+		MaxFilesCountPerUserInput = v.(int)
 	}
 }
 
@@ -904,6 +908,20 @@ func syncSystemSettings() {
 			DefaultValue: "24",
 			DataType:     t.Integer(),
 			Help:         "is the number of hours to clear expired cache",
+		},
+		{
+			Name:         "Max Upload File Size In User Input Form",
+			Value:        fmt.Sprint(MaxFileSizeInUserInput),
+			DefaultValue: "52428800",
+			DataType:     t.Integer(),
+			Help:         "is the maximum upload file size in bytes. 1MB = 1024 * 1024; for example in labor_dispute/prevent_corruption/public_information_request/appeal",
+		},
+		{
+			Name:         "Max File Count In User Input Form",
+			Value:        fmt.Sprint(MaxFilesCountPerUserInput),
+			DefaultValue: "5",
+			DataType:     t.Integer(),
+			Help:         "is the maximum files count in single form input; for example in labor_dispute/prevent_corruption/public_information_request/appeal",
 		},
 	}
 
