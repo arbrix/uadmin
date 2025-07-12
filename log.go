@@ -74,12 +74,12 @@ func (a Action) Custom() Action {
 // Log !
 type Log struct {
 	Model
-	Username  string    `uadmin:"filter;read_only"`
-	Action    Action    `uadmin:"filter;read_only"`
-	TableName string    `uadmin:"filter;read_only"`
-	TableID   int       `uadmin:"filter;read_only"`
-	Activity  string    `uadmin:"code;read_only" sql:"type:longtext"`
-	RollBack  string    `uadmin:"link;"`
+	Username  string `uadmin:"filter;read_only"`
+	Action    Action `uadmin:"filter;read_only"`
+	TableName string `uadmin:"filter;read_only"`
+	TableID   int    `uadmin:"filter;read_only"`
+	Activity  string `uadmin:"code;read_only" sql:"type:longtext"`
+	//RollBack  string    `uadmin:"link;"`
 	CreatedAt time.Time `uadmin:"filter;read_only"`
 }
 
@@ -90,10 +90,12 @@ func (l Log) String() string {
 // Save !
 func (l *Log) Save() {
 	Save(l)
-	if l.Action == l.Action.Modified() || l.Action == l.Action.Deleted() {
-		l.RollBack = RootURL + "revertHandler/?log_id=" + fmt.Sprint(l.ID)
-	}
-	Save(l)
+	/*
+		if l.Action == l.Action.Modified() || l.Action == l.Action.Deleted() {
+			l.RollBack = RootURL + "revertHandler/?log_id=" + fmt.Sprint(l.ID)
+		}
+		Save(l)
+	*/
 }
 
 // ParseRecord !
