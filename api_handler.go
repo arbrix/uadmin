@@ -48,4 +48,8 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 		GetFieldsAPI(w, r, session)
 		return
 	}
+	if strings.HasPrefix(Path, "/csv_import") {
+		CSVImporterHandler(w, r, session)
+		return
+	}
 }
