@@ -545,3 +545,7 @@ var MaxFileSizeInUserInput = int64(5 * 1024 * 1024)
 
 // MaxFilesCountInUserForm is the maximum number of files that user can upload in single form input
 var MaxFilesCountPerUserInput = 5
+
+// OriginSitePath is the original site path where the application is hosted
+// is used to generate full URLs for FB crawler and other similar services
+var OriginSitePath = ""
