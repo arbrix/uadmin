@@ -307,6 +307,8 @@ func (s *Setting) ApplyValue() {
 		MaxFileSizeInUserInput = int64(v.(int))
 	case "uAdmin.MaxFileCountInUserInputForm":
 		MaxFilesCountPerUserInput = v.(int)
+	case "uAdmin.OriginSitePath":
+		OriginSitePath = strings.TrimSpace(v.(string))
 	}
 }
 
@@ -922,6 +924,13 @@ func syncSystemSettings() {
 			DefaultValue: "5",
 			DataType:     t.Integer(),
 			Help:         "is the maximum files count in single form input; for example in labor_dispute/prevent_corruption/public_information_request/appeal",
+		},
+		{
+			Name:         "Origin Site Path",
+			Value:        OriginSitePath,
+			DefaultValue: "",
+			DataType:     t.String(),
+			Help:         "is the original site path where the application is hosted. Is used to generate correct URLs for Meta (X) crawlers (share functionality)",
 		},
 	}
 
