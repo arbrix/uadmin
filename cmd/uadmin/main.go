@@ -59,14 +59,14 @@ func main() {
 
 	// Check if there are no args
 	if len(args) < 2 {
-		fmt.Println(Help)
+		fmt.Print(Help)
 		return
 	}
 
 	// Check if the first arg is not a command
 	if strings.HasSuffix(args[1], "-") {
 		fmt.Println("ERROR: Invalid sytax. Please provide a command")
-		fmt.Println(Help)
+		fmt.Print(Help)
 		return
 	}
 	command := args[1]

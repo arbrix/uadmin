@@ -103,7 +103,7 @@ func (l *Log) ParseRecord(a reflect.Value, modelName string, ID uint, user *User
 	if !ok {
 		errMsg := fmt.Sprintf("Unable to find schema (%s)", modelName)
 		Trail(ERROR, errMsg)
-		return fmt.Errorf(errMsg)
+		return fmt.Errorf("%s", errMsg)
 	}
 	l.Username = user.Username
 	l.TableName = modelName

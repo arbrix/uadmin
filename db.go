@@ -380,7 +380,7 @@ func createDB() error {
 		db = db.Exec("CREATE SCHEMA `" + Database.Name + "` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
 
 		if db.Error != nil {
-			return fmt.Errorf(db.Error.Error())
+			return fmt.Errorf("%w", db.Error)
 		}
 
 		return nil
@@ -424,12 +424,12 @@ func createDB() error {
 		db = db.Exec("CREATE DATABASE " + Database.Name + " WITH OWNER = " + Database.User + " ENCODING = 'UTF8' CONNECTION LIMIT = -1 IS_TEMPLATE = False;")
 
 		if db.Error != nil {
-			return fmt.Errorf(db.Error.Error())
+			return fmt.Errorf("%w", db.Error)
 		}
 
 		return nil
 	}
-	return fmt.Errorf("CreateDB: Unknown database type " + Database.Type)
+	return fmt.Errorf("CreateDB: Unknown database type %s", Database.Type)
 }
 
 // ClearDB clears the db object

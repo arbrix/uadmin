@@ -31,7 +31,7 @@ func SendEmail(to, cc, bcc []string, subject, body string, attachments ...string
 	if EmailFrom == "" || EmailUsername == "" || EmailPassword == "" || EmailSMTPServer == "" || EmailSMTPServerPort == 0 {
 		errMsg := "Email not sent because email global variables are not set"
 		Trail(WARNING, errMsg)
-		return fmt.Errorf(errMsg)
+		return fmt.Errorf("%s", errMsg)
 	}
 
 	// Get the domain name of sender
