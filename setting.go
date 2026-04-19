@@ -291,6 +291,24 @@ func (s *Setting) ApplyValue() {
 		CompressJSON = v.(bool)
 	case "uAdmin.RemoveZeroValueJSON":
 		RemoveZeroValueJSON = v.(bool)
+	case "uAdmin.RateLimitCacheCapacity":
+		RateLimitCacheCapacity = v.(int)
+	case "uAdmin.RateLimitEventFrequency":
+		RateLimitEventFrequency = v.(float64)
+	case "uAdmin.RateLimitTokenNumber":
+		RateLimitTokenNumber = v.(int)
+	case "uAdmin.RateLimitBlockedMinutes":
+		RateLimitBlockedMinutes = v.(int)
+	case "uAdmin.CSRFCacheDefaultExpiration":
+		CSRFCacheDefaultExpiration = v.(int)
+	case "uAdmin.CSRFCacheCleanupInterval":
+		CSRFCacheCleanupInterval = v.(int)
+	case "uAdmin.MaxUploadFileSizeInUserInputForm":
+		MaxFileSizeInUserInput = int64(v.(int))
+	case "uAdmin.MaxFileCountInUserInputForm":
+		MaxFilesCountPerUserInput = v.(int)
+	case "uAdmin.OriginSitePath":
+		OriginSitePath = strings.TrimSpace(v.(string))
 	}
 }
 
@@ -850,6 +868,69 @@ func syncSystemSettings() {
 			DefaultValue: "0",
 			DataType:     t.Boolean(),
 			Help:         "Compress JSON allows the system to reduce the size of json responses",
+		},
+		{
+			Name:         "Rate Limit Cache Capacity",
+			Value:        fmt.Sprint(RateLimitCacheCapacity),
+			DefaultValue: "1024",
+			DataType:     t.Integer(),
+			Help:         "is the maximum number users in cache",
+		},
+		{
+			Name:         "Rate Limit Event Frequency",
+			Value:        fmt.Sprint(RateLimitEventFrequency),
+			DefaultValue: "0.5",
+			DataType:     t.Float(),
+			Help:         "is the maximum number users in cache",
+		},
+		{
+			Name:         "Rate Limit Token Number",
+			Value:        fmt.Sprint(RateLimitTokenNumber),
+			DefaultValue: "10",
+			DataType:     t.Integer(),
+			Help:         "is the number of tokens",
+		},
+		{
+			Name:         "Rate Limit Blocked Minutes",
+			Value:        fmt.Sprint(RateLimitBlockedMinutes),
+			DefaultValue: "10",
+			DataType:     t.Integer(),
+			Help:         "defines the maximum frequency of some events and represented as number of events per second. A zero Limit allows no events",
+		},
+		{
+			Name:         "CSRF Cache Default Expiration",
+			Value:        fmt.Sprint(CSRFCacheDefaultExpiration),
+			DefaultValue: "30",
+			DataType:     t.Integer(),
+			Help:         "is the number of minutes for token to expire",
+		},
+		{
+			Name:         "CSRF Cache Cleanup Interval",
+			Value:        fmt.Sprint(CSRFCacheCleanupInterval),
+			DefaultValue: "24",
+			DataType:     t.Integer(),
+			Help:         "is the number of hours to clear expired cache",
+		},
+		{
+			Name:         "Max Upload File Size In User Input Form",
+			Value:        fmt.Sprint(MaxFileSizeInUserInput),
+			DefaultValue: "52428800",
+			DataType:     t.Integer(),
+			Help:         "is the maximum upload file size in bytes. 1MB = 1024 * 1024; for example in labor_dispute/prevent_corruption/public_information_request/appeal",
+		},
+		{
+			Name:         "Max File Count In User Input Form",
+			Value:        fmt.Sprint(MaxFilesCountPerUserInput),
+			DefaultValue: "5",
+			DataType:     t.Integer(),
+			Help:         "is the maximum files count in single form input; for example in labor_dispute/prevent_corruption/public_information_request/appeal",
+		},
+		{
+			Name:         "Origin Site Path",
+			Value:        OriginSitePath,
+			DefaultValue: "",
+			DataType:     t.String(),
+			Help:         "is the original site path where the application is hosted. Is used to generate correct URLs for Meta (X) crawlers (share functionality)",
 		},
 	}
 
