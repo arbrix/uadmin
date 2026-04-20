@@ -505,13 +505,7 @@ func processForm(modelName string, w http.ResponseWriter, r *http.Request, sessi
 	}
 
 	// Save the record
-	var saverI saver
-	saverI, ok = m.Interface().(saver)
-	if !ok {
-		Save(m.Elem().Addr().Interface())
-	} else {
-		saverI.Save()
-	}
+	SaveRecord(m)
 
 	// Save Approvals
 	for _, approval := range appList {
@@ -547,4 +541,14 @@ func processForm(modelName string, w http.ResponseWriter, r *http.Request, sessi
 	newURL = RootURL + strings.Split(newURL, "/")[0] + "/" + fmt.Sprint(ID)
 	http.Redirect(w, r, newURL, http.StatusSeeOther)
 	return m
+}
+
+// SaveRecord saves the record,
+// a model is represented by a pointer (see NewModel(arg, true) function)
+func SaveRecord(model reflect.Value) {
+	if saverI, ok := model.Interface().(saver); !ok {
+		Save(model.Elem().Addr().Interface())
+	} else {
+		saverI.Save()
+	}
 }

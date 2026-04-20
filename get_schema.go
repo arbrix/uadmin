@@ -77,6 +77,14 @@ func getSchema(a interface{}) (s ModelSchema, ok bool) {
 			continue
 		}
 
+		// Check if the model marked as a CSV Importer
+		if t.Field(index).Anonymous && t.Field(index).Type.Name() == "Model" {
+			if strings.Contains(t.Field(index).Tag.Get("uadmin"), "csv_importer") {
+				s.CSVImporter = true
+			}
+			continue
+		}
+
 		// Initialize the field
 		f := F{
 			Translations: []translation{},
