@@ -22,6 +22,10 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 		pageErrorHandler(w, r, nil)
 		return
 	}
+
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate, private")
+	w.Header().Set("Expires", "0")
+
 	r.URL.Path = strings.TrimPrefix(r.URL.Path, RootURL)
 	r.URL.Path = strings.TrimSuffix(r.URL.Path, "/")
 	URLParts := strings.Split(r.URL.Path, "/")
